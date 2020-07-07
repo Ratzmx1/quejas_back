@@ -41,10 +41,14 @@ router.post("/signup", async (req, res) => {
 });
 
 router.get("/", (req, res) => {
-  return User.find({ email: req.body.email })
+  return User.find()
     .exec()
     .then((docs) => {
       return res.json({ docs });
+    })
+    .catch((e) => {
+      console.error(e);
+      return res.status(500).json({ error: e.message });
     });
 });
 
