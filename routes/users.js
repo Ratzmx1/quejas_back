@@ -1,20 +1,19 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const router = express.Router();
-const jwt = require("jsonwebtoken");
 
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+
+const User = require("../models/user");
 
 mongoose.connect("mongodb://127.0.0.1/libro_reclamos", {
   useNewUrlParser: true,
 });
 
-const User = require("../schema/user");
-const user = require("../schema/user");
+const router = express.Router();
 
 router.post("/signup", async (req, res) => {
   const { name, birthDate, email, password, city } = req.body;
-  console.log("Hashing");
   const hash = bcrypt.hashSync(password, 1);
   return User.find({ email })
     .exec()
@@ -24,7 +23,18 @@ router.post("/signup", async (req, res) => {
       }
       return User.create({ name, email, password: hash, birthDate, city }).then(
         (doc) => {
-          return res.json({ name, email, password, hash });
+          const token = jwt.sign(
+            {
+              name: doc.name,
+              birthDate: doc.birthDate,
+              email,
+              city: doc.city,
+              id: doc._id,
+            },
+            "This its a secret",
+            { expiresIn: 60 * 60 * 24 * 15 } // 15 dias
+          );
+          return res.json({ token });
         }
       );
     });
