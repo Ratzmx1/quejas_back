@@ -18,6 +18,6 @@ app.use(cors());
 app.use("/user", usersRouter);
 app.use("/queja", quejaRouter);
 
-app.listen(3031, function () {
+app.listen(3030, function () {
   console.log("Listen on port 3030");
 });

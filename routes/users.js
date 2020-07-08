@@ -40,11 +40,16 @@ router.post("/signup", async (req, res) => {
     });
 });
 
-router.get("/", (req, res) => {
+router.get("/get", (req, res) => {
   return User.find()
     .exec()
     .then((docs) => {
-      return res.json({ docs });
+      salida = [];
+      docs.forEach((doc) => {
+        const { _id, name, birthDate, city } = doc;
+        salida.push({ _id, name, birthDate, city });
+      });
+      return res.json(salida);
     })
     .catch((e) => {
       console.error(e);
