@@ -28,7 +28,6 @@ router.post("/send", auth, (req, res) => {
           return res.json({
             message: "Queja realizada correctamente",
             id: doc._id,
-            queja: doc.queja,
           });
         })
         .catch((err) => {
@@ -48,7 +47,12 @@ router.get("/get", auth, (req, res) => {
     .exec()
     .then((docs) => {
       docs.forEach((doc) => {
-        quejas.push(doc);
+        const docaux = {
+          desdeName: doc.desdeName,
+          desdeId: doc.desdeId,
+          queja: jwt.verify(doc.queja, "Quejon").queja,
+        };
+        quejas.push(docaux);
       });
       return res.json({ quejas });
     });
